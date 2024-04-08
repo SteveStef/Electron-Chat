@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat App</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div id="app"hidden>
+      <header>
+        <h1>Global Chat App for CMPSC 311</h1>
+      </header>
+      <main>
+        <br></br>
+
+        <div id="chat-window">
+          <ul>
+            <div class="message">
+              <span class="username"></span>
+              <span class="text"></span>
+            </div>
+          </ul>
+        </div>
+
+        <form id="message-form" class="message-form">
+          <input type="text" hidden id="message-input" placeholder="Enter your message..." />
+          <button type="submit" id="send-button" hidden class="send-button">Send</button>
+        </form>
+      </main>
+    </div>
+
+        <div class="login-container" id="login-container">
+          <h2>Enter a name to continue!</h2>
+          <form id="login-form">
+            <label>Username</label>
+            <input type="text" id="name" name="username" required></input>
+            <button type="submit">Submit</button>
+          </form>
+        </div>
+    <script src="renderer.js"></script>
+  </body>
+</html>

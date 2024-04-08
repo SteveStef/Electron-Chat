@@ -1,0 +1,32 @@
+{
+  "name": "electron-r",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "keywords": [],
+  "author": "Steve Stef",
+  "license": "ISC",
+  "dependencies": {
+    "bsondb-api": "^1.4.3"
+  },
+  "devDependencies": {
+    "electron": "^29.2.0",
+    "electron-builder": "^24.13.3"
+  },
+
+  "build": {
+    "linux": {
+      "target": [
+        "deb",
+        "rpm",
+        "snap",
+        "AppImage"
+      ]
+    }
+  }
+}

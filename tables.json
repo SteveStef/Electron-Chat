@@ -1,0 +1,17 @@
+{
+  "databaseID": "d41fed07-f983-46b8-8813-ac29e8fcdcdf",
+  "tables": [
+    {
+      "name": "chatters",
+      "identifier": "username",
+      "requires": [
+        "username",
+        "messages"
+      ],
+      "entryTemplate": {
+        "username": "string",
+        "messages": "object"
+      }
+    }
+  ]
+}
