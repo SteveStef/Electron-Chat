@@ -2,6 +2,7 @@ const { ipcRenderer } = require('electron');
 const db = require('./db-conn');
 
 document.addEventListener('DOMContentLoaded', async () => {
+
   const getAllMessages = async () => {
     const response = await db.getTable('chatters');
     const allMessages = [];
@@ -18,7 +19,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     allMessages.forEach((message) => {
       displayMessage(message.username, message.message);
     });
-    //console.log(response);
   };
 
   const app = document.getElementById('app');
@@ -30,12 +30,25 @@ document.addEventListener('DOMContentLoaded', async () => {
   const loginForm = document.getElementById('login-form');
   const nameInput = document.getElementById('name');
 
+  let list = document.getElementById('active-users').querySelector('ul');
+
+  function addUser(username) {
+    let entry = document.createElement('li');
+    entry.appendChild(document.createTextNode(username));
+    list.appendChild(entry);
+  }
+
   ipcRenderer.on('receive-message', (event, body) => {
     const { username, message } = body;
     displayMessage(username, message);
   });
 
   function displayMessage(username, text) {
+
+    if(username.includes('has joined the chat room!') && text === '') {
+      //addUser(username.split(' ')[0]);
+    }
+
     const messageElement = document.createElement('div');
     messageElement.className = 'message';
     messageElement.innerHTML = `
@@ -46,14 +59,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     app.scrollTop = chatWindow.scrollHeight;
   }
 
-  // Handle login form submission
   loginForm.addEventListener('submit', (event) => {
     event.preventDefault();
     const username = nameInput.value;
-    //console.log(username);
-    //console.log('login form submitted');
     if (username) {
-      ipcRenderer.send('send-message', username);
+      ipcRenderer.send('set-username', username);
       loginContainer.style.display = 'none';
       messageInput.hidden = false;
       sendButton.hidden = false;
@@ -65,9 +75,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const message = messageInput.value;
     if (message) {
       ipcRenderer.send('send-message', message);
-      messageInput.value = ''; // Clear the input field
+      messageInput.value = '';
     }
   });
+
   await getAllMessages();
 });
 

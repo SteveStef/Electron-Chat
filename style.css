@@ -7,6 +7,18 @@ body {
   color: #fff;
 }
 
+#active-users {
+  padding: 20px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #333;
+  color: #fff;
+  width: 15%;
+  display: none;
+}
+
 .login-container {
   position: absolute;
   top: 50%;

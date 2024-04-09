@@ -1,5 +1,4 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
-const emit = require('./emitter');
 const conn = require('./conn');
 const db = require('./db-conn');
 
@@ -17,13 +16,15 @@ function createWindow() {
     },
  });
  win.loadFile("index.html");
-  //win.webContents.openDevTools();
+ //win.webContents.openDevTools();
 }
 
 app.whenReady().then(createWindow);
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
+    conn.write(`${name} has left the chat room! - `);
+    conn.end();
     app.quit();
   }
 });
@@ -34,36 +35,30 @@ app.on('activate', () => {
   }
 });
 
-emit.on('receive-message', (message) => {
-  console.log(`emited: ${message}`);
+conn.on('data', function(data) {
+  const message = data.toString();
   if (!win) {
     console.log('No window to send message to');
     return;
   }
   const name = message.split(' - ')[0];
   const msg = message.split(' - ')[1];
-
   win.webContents.send('receive-message', { username: name, message: msg});
 });
 
-ipcMain.on('send-message', async (event, message) => {
-  console.log(`Main IPC: ${message} with name: ${name}`);
-
-  if (!name) {
-    name = message;
-    const worked = await db.createEntry('chatters', { username: name, messages: [] });
-    console.log(worked);
-    if (worked.error) {
-      currentMessages = await db.getField('chatters', { where: name, get: 'messages' });
-    }
-    conn.write(`${name} has joined the chat room! - `);
-    event.sender.send('receive-message', { username: 'System', message: `Welcome ${name}!` });
-    return;
+ipcMain.on('set-username', async (event, data) => {
+  name = data;
+  const worked = await db.createEntry('chatters', { username: name, messages: [] });
+  if (worked.error) {
+    currentMessages = await db.getField('chatters', { where: name, get: 'messages' });
   }
+  conn.write(`${name} has joined the chat room! - `);
+  event.sender.send('receive-message', { username: 'System', message: `Welcome ${name}!` });
+});
 
+ipcMain.on('send-message', async (event, message) => {
   conn.write(name + " - " + message);
   event.sender.send('receive-message', { username: name, message });
-
   currentMessages.push({ message, timestamp: Date.now() });
   const res = await db.updateEntry('chatters', { where: name, set: { messages: currentMessages } });
   console.log(res);
