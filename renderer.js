@@ -30,24 +30,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   const loginForm = document.getElementById('login-form');
   const nameInput = document.getElementById('name');
 
-  let list = document.getElementById('active-users').querySelector('ul');
-
-  function addUser(username) {
-    let entry = document.createElement('li');
-    entry.appendChild(document.createTextNode(username));
-    list.appendChild(entry);
-  }
-
   ipcRenderer.on('receive-message', (event, body) => {
     const { username, message } = body;
     displayMessage(username, message);
   });
 
   function displayMessage(username, text) {
-
-    if(username.includes('has joined the chat room!') && text === '') {
-      //addUser(username.split(' ')[0]);
-    }
 
     const messageElement = document.createElement('div');
     messageElement.className = 'message';
@@ -73,12 +61,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   messageForm.addEventListener('submit', (event) => {
     event.preventDefault();
     const message = messageInput.value;
-    if (message) {
+    if (message && message.trim() !== '' && message.length < 5000) {
       ipcRenderer.send('send-message', message);
       messageInput.value = '';
+    } else {
+      alert('Message is empty or too long');
     }
   });
-
   await getAllMessages();
 });
 

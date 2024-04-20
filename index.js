@@ -62,5 +62,4 @@ ipcMain.on('send-message', async (event, message) => {
   currentMessages.push({ message, timestamp: Date.now() });
   const res = await db.updateEntry('chatters', { where: name, set: { messages: currentMessages } });
   console.log(res);
-
 });

@@ -12,13 +12,13 @@
   "author": "Steve Stef",
   "license": "ISC",
   "dependencies": {
-    "bsondb-api": "^1.4.3"
+    "bsondb-api": "^1.4.3",
+    "dotenv": "^16.4.5"
   },
   "devDependencies": {
     "electron": "^29.2.0",
     "electron-builder": "^24.13.3"
   },
-
   "build": {
     "linux": {
       "target": [
